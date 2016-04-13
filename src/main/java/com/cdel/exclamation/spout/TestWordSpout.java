@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Spout负责发射新的tuple到这个topology里面来。
+ * Spout是流的源头， 通常从外部数据源读取tuple， 并emit到topology中。
  * TestWordSpout从["nathan", "mike", "jackson", "golda", "bertels"]里面随机选择一个单词发射出来。
  *
  * Spout：在一个topology中产生源数据流的组件。通常情况下spout会从外部数据源中读取数据，然后转换为topology内部的源数据。
@@ -30,6 +30,8 @@ public class TestWordSpout extends BaseRichSpout {
 	    _rand = new Random();
 	}
 
+	//nextTuple()函数， Storm 框架会不停地调用此函数，用户只要在其中生成源数据即可。
+	//nextTuple()会发出一个新 Tuple 到拓扑，如果没有新的元组发出则简单地返回。 nextTuple()方法不阻止任何 Spout 的实现， 因为 Storm 在同一线程调用所有的 Spout 方法。
 	public void nextTuple() {
 		Utils.sleep(100);
 	    final String[] words =new String[] {"nathan", "mike", "jackson", "golda", "bertels"};
@@ -43,6 +45,7 @@ public class TestWordSpout extends BaseRichSpout {
 	}
 
 	@Override
+	//当 Storm 检测到一个元组从 Spout 发出时， ack()和fail()会被调用，要么成功完成通过拓扑，要么未能完成。 ack()和 fail()仅被可靠的 Spout 调用。
 	public void ack(Object id) {
 	}
 

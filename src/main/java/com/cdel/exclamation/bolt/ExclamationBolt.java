@@ -35,6 +35,8 @@ public class ExclamationBolt implements IRichBolt {
 	}
 
 	//定义一个叫做”word”的字段的tuple。
+	//流由元组组成，使用 OutputFieldsDeclarer 声明流及其模式
+	//Bolt 可以发出超过一个的流。为此，使用 OutputFieldsDeclarer 类的 declareStream()方法声明多个流，并使用 OutputCollector 类的 emit()方法指定发射的流。
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("word"));
 	}
