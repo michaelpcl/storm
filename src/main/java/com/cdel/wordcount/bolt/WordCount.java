@@ -2,12 +2,13 @@ package com.cdel.wordcount.bolt;
 
 import java.util.HashMap;
 import java.util.Map;
-import backtype.storm.topology.BasicOutputCollector;
-import backtype.storm.topology.OutputFieldsDeclarer;
-import backtype.storm.topology.base.BaseBasicBolt;
-import backtype.storm.tuple.Fields;
-import backtype.storm.tuple.Tuple;
-import backtype.storm.tuple.Values;
+
+import org.apache.storm.topology.BasicOutputCollector;
+import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.topology.base.BaseBasicBolt;
+import org.apache.storm.tuple.Fields;
+import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 
 @SuppressWarnings("serial")
 public class WordCount extends BaseBasicBolt {
@@ -26,6 +27,14 @@ public class WordCount extends BaseBasicBolt {
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("word", "count"));
+	}
+
+	@Override
+	//最后输出，但在集群里不能保证cleanup被调用
+	public void cleanup(){
+		for (String key : counts.keySet()) {
+			System.out.println(key + " : " + counts.get(key));
+		}
 	}
 
 }
