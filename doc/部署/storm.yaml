@@ -18,19 +18,18 @@
 storm.zookeeper.servers:
      - "server145"
      - "server146"
-# 
-# nimbus.seeds: ["server146"]
-nimbus.host: "nimbus152"
+#
+nimbus.seeds: ["server145"]
 strom.local.dir: "/home/storm/tmp"
 supervisor.slots.ports:
      - 6700
      - 6701
      - 6702
      - 6703
-# 
-# 
+#
+#
 # ##### These may optionally be filled in:
-#    
+#
 ## List of custom serializations
 # topology.kryo.register:
 #     - org.mycompany.MyType
