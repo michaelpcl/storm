@@ -1,0 +1,13 @@
+在storm nimbus节点上需要运行的进程为nimbus、uui和logviewer，在storm supervisor节点上需要运行的进程为supervisor和logviewer。
+
+storm ui分成cluster summary、topology summary、supervisor summary、nimbus configuration四个部分：
+1、cluster summary：介绍了整个集群的信息，其中列出了slot的总数和使用情况，通过空闲slot我们可以预估整个集群的容量以确定集群的扩容等。
+2、topology summary：介绍了整个storm集群上面运行的topology的情况，选择每个具体的topology，可以看到该topology的所有spout、bolt
+及其统计信息。
+3、supervisor summary：介绍了整个storm集群中的所有的supervisor节点的状态，其中uptime是supervisor进程启动后到当前的运行时间。
+4、nimbus configuration：介绍了整个storm集群的配置信息，由于所有的节点都采用了相同的配置，因此该配置信息实际上也是整个集群的配置，
+其中：
+	nimbus.thrift.port：该端口为thrift服务端口，当需要对ui进行二次开发时，可以根据thrift通过该端口获取storm的运行状态（storm ui
+	就是通过该端口调用thrift接口获取到整个storm的运行状态的）
+	storm.messaging.transport：当其值为org.apache.storm.messaging.netty.Context时，表示整个集群使用的是netty的消息传输机制。
+	worker.childopts：表示topology分布到各个supervisor节点上运行时的jvm参数。
