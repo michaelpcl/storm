@@ -1,0 +1,37 @@
+task为storm中最小的处理单元。
+nimbus和supervisor之间的通信依靠zookeeper完成，并且nimbus进程和supervisor都是快速失败和无状态的，所有的状态要么在zookeeper
+里，要么在本地磁盘上，这也意味着你可以用kill -9来杀死nimbus和supervisor进程，然后再重启他们，他们可以继续工作，就好像什么都没有
+发生过似的。
+
+storm组件基本概念：
+	1、topology：一个实时计算应用程序逻辑上被封装在topology对象中，类似Hadoop的作业，与作业不同的是，topology会一直运行直到被
+	显示的杀死
+	2、nimbus：负责资源分配和任务调度，类似Hadoop的jobTracker
+	3、supervisor：负责接收nimbus分配的任务，启动和停止属于自己管理的worker进程，类似Hadoop的taskTracker
+	4、worker：运行具体处理组件逻辑的进程
+	5、executor：storm0.8之后，executor为worker进程中的具体的物理线程，同一个spout/bolt的task可能会共享一个物理线程，一个
+	executor中只能运行隶属于同一个spout/bolt的task
+	6、task：每一个spout/bolt具体要做的工作，也是各个节点之间进行分组的单位
+	7、spout：在topology中产生源数据流的组件，通常spout获取数据源的数据（如kafka、mq等读取数据），然后调用nextTuple函数，发射
+	数据供bolt消费
+	8、bolt：在topology中接受spout的数据然后执行处理的组件，bolt可以执行过滤，函数操作，合并，写数据库等任何操作。bolt在接收到
+	消息后会调用execute函数，用户可以在其中执行自己想要的操作
+	9、tuple：消息传递的基本单元
+	10、stream：源源不断传递的tuple组成了stream
+	11、stream分组：即消息的分区方法。storm提供了若干种实用的分组方法，包括shuffle、fields、all、global、none、direct、
+	local or shuffle
+
+分组：
+	1、shuffle：task中的数据随机分配，可以保证同一级bolt上的每个task处理的tuple数量一致。
+	2、fields分组：根据tuple中的某一个field或者多个field的值来划分，比如stream根据userid的值来分组，具有相同userid值的tuple
+	会被分发到相同的task中。（具有不同userid值的tuple可能会被发到其它task中。比如userid为1的tuple都会发给task1，userid为2的
+	tuple可能在task1上也可能在task2上，但是同时稚嫩关在一个task上）
+	3、all分组：所有的tuple都会分发到所有的task上。
+	4、global分组：整个stream会选择一个task作为分发的目的地，通常是具有最新id的task。
+	5、none分组：等同于shuffle。
+
+storm的可靠性：
+	storm允许用户在spout中发射一个新的tuple时为其指定一个messageid，这个messageid可以是任意的object对象。多个stream tuple
+	可以共用同一个messageid，表示这多个stream tuple对用于来说是同一个消息单元。storm的可靠性是指storm会告知用户每一个消息单元
+	是否在一个指定的时间内被完全处理。完成处理的意思是该messageid绑定的stream tuple以及由该stream tuple衍生的所有tuple都经过
+	了topology中每一个应该到达的bolt的处理。在storm中，使用acker来解决tuple消息处理的可靠性问题。
