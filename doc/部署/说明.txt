@@ -1,11 +1,12 @@
-storm.zookeeper.servers：表示Zookeeper集群地址。
+storm.zookeeper.servers：这是一个为storm服务的Zookeeper集群的主机列表。
 storm.zookeeper.port：如果Zookeeper集群使用的不是默认端口，那么还需要配置这个。
-storm.local.dir：用于配置Storm存储少量文件的路径。
-nimbus.seeds：用于配置主控节点的地址，可以配置多个，各个Supervisor工作节点需要知道哪个机器是Nimbus，以便下载Topologies的jars、
-confs等文件。
-supervisor.slots.ports: 对于每个Supervisor工作节点，需要配置该工作节点可以运行的worker数量。每个worker占用一个单独的端口用
-于接收消息，该配置选项即用于定义哪些端口是可被worker使用的。默认情况下，每个节点上可运行4个workers，分别在6700、6701、6702和
-6703端口。
+storm.local.dir：nimbus和supervisor守护进程需要在本地硬盘的一个目录存储少量的状态（如jars、confs等）。你应该在每台主机上创
+建该目录，赋予它适当的权限，然后使用该配置填写目录位置。
+nimbus.seeds：用于配置主控节点的地址，可以配置多个，各个Supervisor工作节点需要知道哪个机器是Nimbus，以便下载Topologies的
+jars、confs等文件。
+supervisor.slots.ports: 对于每个Supervisor工作节点，需要配置该工作节点可以运行的worker数量。每个worker占用一个单独的端口
+用于接收消息，该配置选项即用于定义哪些端口是可被worker使用的。默认情况下，每个节点上可运行4个workers，分别在6700、6701、6702和
+6703端口。如果这里设置5个端口，storm将分配5个worker在这台主机上运行。
 
 启动storm：
 	1、./bin/storm nimbus &

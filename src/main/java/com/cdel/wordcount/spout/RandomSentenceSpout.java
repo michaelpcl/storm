@@ -46,7 +46,8 @@ public class RandomSentenceSpout extends BaseRichSpout {
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		//告诉框架输出哪些字段
+		//声明元组new Fields("word")，告诉框架输出哪些字段
+		//流由元组组成，OutputFieldsDeclarer声明流
 		declarer.declare(new Fields("word"));
 	}
 
